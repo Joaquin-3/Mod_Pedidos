@@ -1,0 +1,12 @@
+# entornos y editor
+.venv/
+.vscode/
+.idea/
+.env
+
+# python cache & compilados
+**/__pycache__/
+**/*.py[cod]
+
+# bases locales
+*.sqlite3
