@@ -1,0 +1,93 @@
+{% extends "panel/base.html" %}
+{% block title %}Mesero · Pedidos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Panel de Pedidos (Mesero)</h3>
+  <button class="btn btn-outline-primary" onclick="cargarPedidos()">↻ Refrescar</button>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Crear pedido</div>
+  <div class="card-body">
+    <form class="row g-2" onsubmit="crearPedido(event)">
+      <div class="col-md-3">
+        <label class="form-label">Mesa</label>
+        <input class="form-control" id="mesa" placeholder="Ej: 12" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Cliente</label>
+        <input class="form-control" id="cliente" placeholder="Nombre del cliente" required>
+      </div>
+      <div class="col-md-3 d-grid align-items-end">
+        <button class="btn btn-success mt-4">Crear</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">Pedidos</div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>ID</th><th>Mesa</th><th>Cliente</th><th>Estado</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-pedidos"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = "/api/pedidos/";
+
+const badge = (estado)=>{
+  const map = {
+    "CREADO":"secondary", "EN_PREPARACION":"warning",
+    "LISTO":"info","ENTREGADO":"primary","CERRADO":"success","CANCELADO":"dark"
+  };
+  return `<span class="badge bg-${map[estado]||'secondary'} badge-state">${estado}</span>`;
+}
+
+async function cargarPedidos(){
+  const res = await fetch(API_BASE);
+  const data = await res.json();
+  const tbody = document.getElementById('tbody-pedidos');
+  tbody.innerHTML = data.map(p=>`
+    <tr>
+      <td style="font-family:monospace">${p.id}</td>
+      <td>${p.mesa}</td>
+      <td>${p.cliente}</td>
+      <td>${badge(p.estado)}</td>
+      <td class="d-flex gap-1 flex-wrap">
+        <button class="btn btn-sm btn-outline-primary" onclick="accion('${p.id}','confirmar')">Confirmar</button>
+        <button class="btn btn-sm btn-outline-danger" onclick="accion('${p.id}','cancelar')">Cancelar</button>
+        <button class="btn btn-sm btn-outline-success" onclick="accion('${p.id}','entregar','PATCH')">Entregar</button>
+        <button class="btn btn-sm btn-outline-dark" onclick="accion('${p.id}','cerrar','PATCH')">Cerrar</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function crearPedido(e){
+  e.preventDefault();
+  const mesa = document.getElementById('mesa').value;
+  const cliente = document.getElementById('cliente').value;
+  await fetch(API_BASE, json({mesa, cliente}));
+  e.target.reset();
+  await cargarPedidos();
+}
+
+async function accion(id, accion, method="POST"){
+  const url = `${API_BASE}${id}/${accion}`;
+  const opts = {method, headers:{'X-CSRFToken':csrftoken}};
+  await fetch(url, opts);
+  await cargarPedidos();
+}
+
+cargarPedidos();
+</script>
+{% endblock %}

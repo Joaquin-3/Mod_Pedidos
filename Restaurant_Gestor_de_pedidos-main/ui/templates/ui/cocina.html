@@ -1,0 +1,69 @@
+{% extends "panel/base.html" %}
+{% block title %}Cocina - M4 (demo){% endblock %}
+
+{% block content %}
+<h3 class="mb-3">Cocina – Monitor</h3>
+
+{% if messages %}
+  {% for m in messages %}
+    <div class="alert alert-{{ m.tags }} py-2">{{ m }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="card shadow-sm">
+  <div class="card-header">Cola de pedidos</div>
+  <div class="card-body">
+    {% if pedidos %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Mesa</th>
+              <th>Cliente</th>
+              <th>Plato</th>
+              <th>Estado</th>
+              <th>Creado</th>
+              <th>Actualizado</th>
+              <th style="width:300px">Acciones cocina</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in pedidos %}
+              <tr>
+                <td><strong>{{ p.mesa|default:"-" }}</strong></td>
+                <td>{{ p.cliente|default:"-" }}</td>
+                <td>{{ p.plato_nombre|default:p.plato }}</td>
+                <td><span class="badge bg-secondary">{{ p.estado }}</span></td>
+                <td>{{ p.creado_str }}</td>
+                <td>{{ p.actu_str }}</td>
+                <td class="d-flex flex-wrap gap-1">
+                  {# Pedido recién creado: aún no confirmado por el mesero #}
+                  {% if p.estado == "CREADO" %}
+                    <span class="text-muted small">Esperando confirmación del mesero…</span>
+
+                  {# Pedido ya confirmado: Cocina decide si hay stock o si lo deja listo #}
+                  {% elif p.estado == "EN_PREPARACION" %}
+                    <a href="{% url 'ui:cocina_listo' p.id %}" class="btn btn-success btn-sm">
+                      Pedido listo
+                    </a>
+                    <a class="btn btn-sm btn-outline-danger"
+                       href="{% url 'ui:cocina_sin_ingredientes' p.id %}">
+                      Sin ingredientes
+                    </a>
+
+                  {# Otros estados (LISTO, ENTREGADO, CANCELADO, etc.) #}
+                  {% else %}
+                    <span class="text-muted small">Sin acciones</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No hay pedidos.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

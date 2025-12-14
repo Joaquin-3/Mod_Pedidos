@@ -1,0 +1,6 @@
+[
+  {"model":"mock.item","pk":1,"fields":{"tipo":"PLATO","nombre":"Chorrillana","codigo":"PL-01"}},
+  {"model":"mock.item","pk":2,"fields":{"tipo":"PLATO","nombre":"Lomo a lo pobre","codigo":"PL-02"}},
+  {"model":"mock.item","pk":3,"fields":{"tipo":"ING","nombre":"Papa","codigo":"ING-PA"}},
+  {"model":"mock.item","pk":4,"fields":{"tipo":"ING","nombre":"Huevo","codigo":"ING-HV"}}
+]

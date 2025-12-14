@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <h1>Solicitar producto</h1>
+
+  {% for message in messages %}
+    <div class="alert">{{ message }}</div>
+  {% endfor %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+
+    <div>
+      <label for="id_imagenes">Imágenes de referencia</label><br>
+      <input type="file" name="imagenes" id="id_imagenes" multiple>
+    </div>
+
+    <button type="submit">Enviar solicitud</button>
+  </form>
+{% endblock %}

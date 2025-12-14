@@ -1,0 +1,35 @@
+{% extends "panel/base.html" %}
+{% block title %}Stock{% endblock %}
+
+{% block content %}
+<h3 class="mb-3">Stock</h3>
+
+<div class="card shadow-sm">
+  <div class="card-header">Inventario actual (demo)</div>
+  <div class="card-body">
+    {% if inventario %}
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th class="text-end">Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {# OJO: .items para recorrer dict #}
+            {% for nombre, cant in inventario.items %}
+              <tr>
+                <td class="text-capitalize">{{ nombre }}</td>
+                <td class="text-end">{{ cant }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">Sin datos de inventario.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

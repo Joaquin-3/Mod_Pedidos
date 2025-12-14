@@ -1,0 +1,43 @@
+<!-- templates/panel/base.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Restaurant Demo{% endblock %}</title>
+  <!-- Bootstrap 5 via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background:#f6f7fb; }
+    .navbar-brand { font-weight:700; }
+    .card { border:0; }
+    .badge { letter-spacing:.4px; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'ui:mesero' %}">Restaurant Demo</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'mesero' %}active{% endif %}" href="{% url 'ui:mesero' %}">Mesero</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'cai' %}active{% endif %}" href="{% url 'ui:cocina' %}">Cocina</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'stock' %}active{% endif %}" href="{% url 'ui:stock' %}">Stock</a></li>
+        <li class="nav-item"><a class="nav-link" href="/api/">API</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4">
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
